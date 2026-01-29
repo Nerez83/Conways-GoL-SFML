@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Game of Life &lpar;GoL&rpar;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="game-of-life-gol">Game of Life (GoL)</h1>
+<p>by Ondřej Hůlka</p>
+<h2 id="binaries">Binaries</h2>
+<p>In this folder/directory there are three executable files: <code>GoL-standalone.exe</code>, <code>GoL-static</code> and <code>GoL.AppImage</code>.</p>
+<p><strong><code>GoL-standalone.exe</code></strong></p>
+<ul>
+<li>Microsoft Windows executable with SFML and all of its dependencies statically linked.</li>
+<li>It should run without requiring any additional libraries to be installed.</li>
+<li>The exact command used to compile this executable can be found in <code>tasks.json</code> inside the <code>.vscode</code> folder, under the comment <code>standalone-release</code>.</li>
+</ul>
+<p><strong><code>GoL-static</code></strong></p>
+<ul>
+<li>Linux executable with only SFML statically linked.</li>
+<li>To run it, all other dependencies must be installed on the system, although most of them are usually provided by the distribution.</li>
+<li>If the binary fails to run, the error is most likely caused by a missing dependency.</li>
+</ul>
+<p><strong><code>GoL.AppImage</code></strong></p>
+<ul>
+<li>AppImage file, where there are all necessary dependencies already inside.</li>
+<li>If the AppImage fails to run, the error is most likely cause by a missing <code>fuse</code> package or an old version of <code>glibc</code>.</li>
+</ul>
+<h2 id="compiling-for-microsoft-windows">Compiling for Microsoft Windows</h2>
+<p>If you want to compile the project without downloading SFML yourself, dynamic libraries (<code>.dll</code> files) are provided in the <code>bin</code> folder.</p>
+<p>For Windows to find these libraries, you must either:</p>
+<ul>
+<li>Add the <code>bin</code> folder to the <code>PATH</code> environment variable, <strong>or</strong></li>
+<li>Copy all <code>.dll</code> files into the same directory as the executable.</li>
+</ul>
+<p>SFML requires a <strong>specific compiler version</strong>, which must be downloaded from the official SFML website:<br>
+<a href="https://www.sfml-dev.org/download/sfml/3.0.2/">https://www.sfml-dev.org/download/sfml/3.0.2/</a></p>
+<p>To compile the project, run the following command <strong>from this directory</strong>:</p>
+<pre><code class="language-sh">Path_to_SFMLs_version_of_g++ -O3 -g -Iinclude src/*.cpp main.cpp -Llib -lsfml-graphics -lsfml-window -lsfml-system -o GoL.exe
+</code></pre>
+<p>Optionally, you can add the compiler’s directory to the beginning of the PATH environment variable and use g++ instead of the full path.</p>
+<h2 id="compiling-for-linux">Compiling for Linux</h2>
+<p>If you want to compile the project without installing SFML system-wide, dynamic libraries (<code>.so</code> files) are provided in the <code>lib</code> folder.
+To compile the project, run the following command <strong>from this directory</strong>:</p>
+<pre><code class="language-sh">g++ -O3 -DNDEBUG -DSFML_STATIC src/*.cpp main.cpp -o GoL -Llib -Wl,-Bstatic -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -Wl,-Bdynamic -lX11 -lXrandr -lXcursor -lXi -lGL -lfreetype -lharfbuzz -ljpeg -lbz2 -lpng16 -lz -lbrotlidec -lbrotlicommon -ludev -lpthread -ldl -lm
+</code></pre>
+<h2 id="configuration-file">Configuration File</h2>
+<p>There is a <code>config.ini</code> file where you can change certain settings, mainly <code>grid_width</code> and <code>grid_height</code> without recompiling the whole project.
+If the file does not exist, all configuration values are initialized with default values.</p>
+
+            
+            
+        </body>
+        </html>
